@@ -1,0 +1,93 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: petcare-backend
+
+  # ── PostgreSQL ────────────────────────────────────────────
+  datasource:
+    url: jdbc:postgresql://localhost:5432/petcare_db
+    username: YOUR_DB_USERNAME
+    password: YOUR_DB_PASSWORD
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    open-in-view: false
+
+  # ── Redis ─────────────────────────────────────────────────
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      # password: YOUR_REDIS_PASSWORD  # uncomment if Redis has auth
+
+  # ── Kafka ─────────────────────────────────────────────────
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+    consumer:
+      group-id: petcare-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.petcare.events
+
+  # ── Servlet / Multipart ───────────────────────────────────
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 15MB
+
+# ── Firebase ───────────────────────────────────────────────
+firebase:
+  service-account-path: classpath:firebase/service-account.json
+
+# ── Supabase Storage ───────────────────────────────────────
+supabase:
+  url: https://YOUR_PROJECT_ID.supabase.co
+  service-key: YOUR_SUPABASE_SERVICE_KEY
+  storage:
+    bucket: petcare-media
+
+# ── SpringDoc / Swagger ────────────────────────────────────
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    try-it-out-enabled: true
+
+# ── Actuator ───────────────────────────────────────────────
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# ── Logging ────────────────────────────────────────────────
+logging:
+  level:
+    com.petcare: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: WARN

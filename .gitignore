@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### PetCare+ – Sensitive Files ###
+src/main/resources/firebase/service-account.json
+*.env
+.env
+.env.local
+application-local.yml
+
+### Old properties file (replaced by application.yml) ###
+src/main/resources/application.properties

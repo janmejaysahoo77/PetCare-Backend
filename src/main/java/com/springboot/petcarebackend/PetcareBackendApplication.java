@@ -1,13 +1,4 @@
+// This file is intentionally left as a stub.
+// The application entry point has moved to:
+// com.petcare.PetCareApplication
 package com.springboot.petcarebackend;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class PetcareBackendApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(PetcareBackendApplication.class, args);
-    }
-
-}
