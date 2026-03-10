@@ -22,6 +22,7 @@
         <mapstruct.version>1.6.2</mapstruct.version>
         <firebase.version>9.2.0</firebase.version>
         <springdoc.version>2.3.0</springdoc.version>
+        <kafka.version>4.1.1</kafka.version>
     </properties>
 
     <dependencies>
@@ -44,18 +45,7 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- ===== Data JPA + PostgreSQL ===== -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <!-- ===== Redis ===== -->
+        <!-- ===== NoSQL Firebase (Using firebase-admin) ===== -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>

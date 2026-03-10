@@ -13,30 +13,30 @@ public class KafkaConfig {
     @Bean
     public NewTopic petCreatedTopic() {
         return TopicBuilder.name("pet.created")
-                .partitions(3).replicas(1).build();
+                .partitions(3).replicas(3).build();
     }
 
     @Bean
     public NewTopic appointmentBookedTopic() {
         return TopicBuilder.name("appointment.booked")
-                .partitions(3).replicas(1).build();
+                .partitions(3).replicas(3).build();
     }
 
     @Bean
-    public NewTopic adoptionRequestedTopic() {
-        return TopicBuilder.name("adoption.requested")
-                .partitions(3).replicas(1).build();
+    public NewTopic appointmentCancelledTopic() {
+        return TopicBuilder.name("appointment.cancelled")
+                .partitions(3).replicas(3).build();
     }
 
     @Bean
-    public NewTopic lostPetReportedTopic() {
-        return TopicBuilder.name("lostpet.reported")
-                .partitions(3).replicas(1).build();
+    public NewTopic petLostTopic() {
+        return TopicBuilder.name("pet.lost")
+                .partitions(3).replicas(3).build();
     }
 
     @Bean
-    public NewTopic emergencyTriggeredTopic() {
-        return TopicBuilder.name("emergency.triggered")
-                .partitions(3).replicas(1).build();
+    public NewTopic petFoundTopic() {
+        return TopicBuilder.name("pet.found")
+                .partitions(3).replicas(3).build();
     }
 }
