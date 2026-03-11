@@ -41,6 +41,15 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success(user));
     }
 
+    @PostMapping("/verify")
+    @Operation(summary = "Verify token and get current authenticated user's profile", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<ApiResponse<UserResponse>> verifyToken(
+            @AuthenticationPrincipal UserPrincipal principal) {
+
+        UserResponse user = userService.getCurrentUser(principal);
+        return ResponseEntity.ok(ApiResponse.success("Token verified successfully", user));
+    }
+
     @GetMapping("/health")
     @Operation(summary = "Public health check endpoint (no auth required)")
     public ResponseEntity<ApiResponse<String>> publicHealthCheck() {

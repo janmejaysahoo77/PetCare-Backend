@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/adoptions")
@@ -47,7 +46,7 @@ public class AdoptionController {
     @PatchMapping("/{id}/status")
     @Operation(summary = "Update adoption status (e.g. ADOPTED)", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ApiResponse<AdoptionResponse>> updateStatus(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @RequestBody Map<String, String> payload) {
 
         AdoptionStatus status = AdoptionStatus.valueOf(payload.get("status").toUpperCase());

@@ -5,12 +5,11 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Builder
 public class PetResponse {
-    private UUID id;
+    private String id;
     private String ownerId;
     private String name;
     private String species;

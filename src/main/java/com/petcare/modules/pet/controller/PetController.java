@@ -17,7 +17,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/pets")
@@ -48,14 +47,14 @@ public class PetController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get detailed profile of a specific pet", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<ApiResponse<PetResponse>> getPet(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<PetResponse>> getPet(@PathVariable String id) {
         return ResponseEntity.ok(ApiResponse.success(petService.getPet(id)));
     }
 
     @PostMapping("/{id}/vaccinations")
     @Operation(summary = "Add a vaccination record for a pet (VET role recommended)", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ApiResponse<VaccinationResponse>> addVaccination(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @AuthenticationPrincipal UserPrincipal principal,
             @Valid @RequestBody VaccinationRequest request) {
 
@@ -67,7 +66,7 @@ public class PetController {
 
     @GetMapping("/{id}/vaccinations")
     @Operation(summary = "Get all vaccination records for a specific pet", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<ApiResponse<List<VaccinationResponse>>> getVaccinations(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<List<VaccinationResponse>>> getVaccinations(@PathVariable String id) {
         return ResponseEntity.ok(ApiResponse.success(petService.getPetVaccinations(id)));
     }
 }

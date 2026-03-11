@@ -7,13 +7,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 public class AppointmentRequest {
 
     @NotNull(message = "Pet ID is required")
-    private UUID petId;
+    private String petId;
 
     @NotBlank(message = "Vet ID is required")
     private String vetId;

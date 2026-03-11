@@ -17,4 +17,6 @@ public class RegisterRequest {
     private String phoneNumber;
 
     private String fcmToken;
+    
+    private String role;
 }

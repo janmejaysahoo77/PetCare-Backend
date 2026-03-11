@@ -4,6 +4,10 @@ import com.petcare.common.ResourceNotFoundException;
 import com.petcare.modules.auth.dto.RegisterRequest;
 import com.petcare.modules.auth.dto.UserResponse;
 import com.petcare.modules.auth.entity.User;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Set;
 import com.petcare.modules.auth.repository.UserRepository;
 import com.petcare.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +22,27 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private static final Set<String> ALLOWED_ROLES = Set.of(
+            "ROLE_PET_OWNER",
+            "ROLE_PET_SHOP_OWNER",
+            "ROLE_PET_SHELTER",
+            "ROLE_VET",
+            "ROLE_ADMIN"
+    );
+
     @Transactional
     public UserResponse registerUser(UserPrincipal principal, RegisterRequest request) {
         if (userRepository.existsById(principal.getUid())) {
             throw new IllegalArgumentException("User already registered");
+        }
+
+        String role = request.getRole();
+        if (role == null || role.isBlank()) {
+            role = "ROLE_PET_OWNER";
+        } else {
+            if (!ALLOWED_ROLES.contains(role)) {
+                throw new IllegalArgumentException("Invalid role provided");
+            }
         }
 
         User user = User.builder()
@@ -30,8 +51,7 @@ public class UserService {
                 .displayName(request.getDisplayName() != null ? request.getDisplayName() : principal.getName())
                 .phoneNumber(request.getPhoneNumber())
                 .fcmToken(request.getFcmToken())
-                // Default to PET_OWNER if not specified via claims yet
-                .role("ROLE_PET_OWNER")
+                .role(role)
                 .build();
 
         user = userRepository.save(user);
@@ -63,7 +83,12 @@ public class UserService {
                 .displayName(user.getDisplayName())
                 .role(user.getRole())
                 .phoneNumber(user.getPhoneNumber())
-                .createdAt(user.getCreatedAt())
+                .createdAt(toLocalDateTime(user.getCreatedAt()))
                 .build();
+    }
+
+    private LocalDateTime toLocalDateTime(Date date) {
+        if (date == null) return null;
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    // private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Transactional
     public AppointmentResponse bookAppointment(String ownerId, AppointmentRequest request) {
@@ -41,7 +40,7 @@ public class AppointmentService {
         // Async Event triggering Notifications / Email
         String eventPayload = String.format("{\"appointmentId\":\"%s\",\"vetId\":\"%s\",\"ownerId\":\"%s\"}",
                 appointment.getId(), appointment.getVetId(), appointment.getOwnerId());
-        kafkaTemplate.send("appointment.booked", appointment.getId().toString(), eventPayload);
+        // kafkaTemplate.send("appointment.booked", appointment.getId(), eventPayload);
 
         log.info("Appointment {} booked by owner {} for vet {}", appointment.getId(), ownerId, request.getVetId());
 
@@ -61,7 +60,7 @@ public class AppointmentService {
     }
 
     @Transactional
-    public AppointmentResponse updateStatus(UUID id, AppointmentStatus newStatus, String requestingUserId) {
+    public AppointmentResponse updateStatus(String id, AppointmentStatus newStatus, String requestingUserId) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment", "id", id));
 
@@ -75,8 +74,8 @@ public class AppointmentService {
         log.info("Appointment {} status changed from {} to {}", id, oldStatus, newStatus);
 
         if (newStatus == AppointmentStatus.CANCELLED) {
-            kafkaTemplate.send("appointment.cancelled", appointment.getId().toString(),
-                    String.format("{\"appointmentId\":\"%s\"}", id));
+            // kafkaTemplate.send("appointment.cancelled", appointment.getId(),
+            //         String.format("{\"appointmentId\":\"%s\"}", id));
         }
 
         return toDto(appointment);

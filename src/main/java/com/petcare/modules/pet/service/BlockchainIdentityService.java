@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.UUID;
 
 @Service
 public class BlockchainIdentityService {
@@ -14,8 +13,8 @@ public class BlockchainIdentityService {
      * Generates a deterministic, Ethereum-style 0x hash representing the pet's
      * immovable identity on the (simulated) blockchain.
      */
-    public String generatePetIdentityHash(UUID petId, String ownerId) {
-        String input = petId.toString() + ownerId + System.currentTimeMillis();
+    public String generatePetIdentityHash(String petId, String ownerId) {
+        String input = petId + ownerId + System.currentTimeMillis();
         return "0x" + sha256Hex(input).substring(0, 40); // 40 chars mimicking ETH addresses
     }
 

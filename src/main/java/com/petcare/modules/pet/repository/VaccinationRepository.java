@@ -1,15 +1,48 @@
 package com.petcare.modules.pet.repository;
 
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
 import com.petcare.modules.pet.entity.VaccinationRecord;
-import org.springframework.data.jpa.repository.JpaRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Repository
-public interface VaccinationRepository extends JpaRepository<VaccinationRecord, UUID> {
-    List<VaccinationRecord> findByPetId(UUID petId);
+@RequiredArgsConstructor
+public class VaccinationRepository {
 
-    List<VaccinationRecord> findByPetIdOrderByDateGivenDesc(UUID petId);
+    private final Firestore firestore;
+    private static final String COLLECTION_NAME = "vaccinations";
+
+    public VaccinationRecord save(VaccinationRecord record) {
+        if (record.getId() == null) {
+            record.setId(UUID.randomUUID().toString());
+        }
+        try {
+            firestore.collection(COLLECTION_NAME).document(record.getId()).set(record).get();
+            return record;
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Failed to save vaccination", e);
+        }
+    }
+
+    public List<VaccinationRecord> findByPetIdOrderByDateGivenDesc(String petId) {
+        try {
+            var querySnapshot = firestore.collection(COLLECTION_NAME)
+                    .whereEqualTo("petId", petId)
+                    .orderBy("dateGiven", Query.Direction.DESCENDING)
+                    .get().get();
+            return querySnapshot.getDocuments().stream()
+                    .map(doc -> doc.toObject(VaccinationRecord.class))
+                    .collect(Collectors.toList());
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Failed to fetch vaccinations", e);
+        }
+    }
 }

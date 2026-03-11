@@ -5,13 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Builder
 public class LostPetResponse {
-    private UUID id;
-    private UUID petId;
+    private String id;
+    private String petId;
     private String ownerId;
     private LocalDateTime lastSeenDate;
     private String lastSeenLocation;

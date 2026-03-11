@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/appointments")
@@ -56,7 +55,7 @@ public class AppointmentController {
     @PatchMapping("/{id}/status")
     @Operation(summary = "Update appointment status (Confirm, Cancel, Complete)", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ApiResponse<AppointmentResponse>> updateStatus(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @AuthenticationPrincipal UserPrincipal principal,
             @RequestBody Map<String, String> payload) {
 

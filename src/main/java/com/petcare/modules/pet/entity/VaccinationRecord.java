@@ -1,44 +1,29 @@
 package com.petcare.modules.pet.entity;
 
-import com.petcare.common.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "vaccination_records")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VaccinationRecord extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(updatable = false, nullable = false)
-    private UUID id;
-
-    @Column(name = "pet_id", nullable = false)
-    private UUID petId; // References Pet.id
-
-    @Column(name = "vaccine_name", nullable = false)
+public class VaccinationRecord {
+    private String id;
+    private String petId; // References Pet.id
     private String vaccineName;
-
-    @Column(name = "date_given", nullable = false)
     private LocalDate dateGiven;
-
-    @Column(name = "next_due_date")
     private LocalDate nextDueDate;
-
-    @Column(name = "vet_id")
-    private String vetId; // References User.uid of the Vet
-
-    @Column(name = "vet_name")
-    private String vetName; // Denormalized for display
-
-    @Column(name = "certificate_url")
+    private String vetId; // References Vet User.uid
+    private String vetName;
     private String certificateUrl;
+
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
+    @Builder.Default
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }

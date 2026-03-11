@@ -15,7 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/lost-pets")
@@ -44,7 +43,7 @@ public class LostPetController {
     @PatchMapping("/{id}/resolve")
     @Operation(summary = "Mark a lost pet as FOUND/RESOLVED", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ApiResponse<LostPetResponse>> resolveLostPet(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @AuthenticationPrincipal UserPrincipal principal) {
 
         LostPetResponse response = postService.resolveLostPet(id, principal.getUid());

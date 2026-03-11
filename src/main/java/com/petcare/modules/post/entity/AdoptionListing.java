@@ -1,40 +1,28 @@
 package com.petcare.modules.post.entity;
 
-import com.petcare.common.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "adoption_listings")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AdoptionListing extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(updatable = false, nullable = false)
-    private UUID id;
-
-    @Column(name = "pet_id", nullable = false)
-    private UUID petId;
-
-    @Column(name = "shelter_id", nullable = false)
-    private String shelterId; // ID of the Shelter User
-
-    @Column(length = 1000)
+public class AdoptionListing {
+    private String id;
+    private String petId;
+    private String shelterId; // UID
     private String description;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
     private AdoptionStatus status; // AVAILABLE, PENDING, ADOPTED
-
-    @Column(name = "adoption_fee")
     private Double adoptionFee;
+
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
+    @Builder.Default
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     public enum AdoptionStatus {
         AVAILABLE, PENDING, ADOPTED

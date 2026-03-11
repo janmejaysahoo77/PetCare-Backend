@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,7 +27,7 @@ public class PostService {
 
     private final AdoptionRepository adoptionRepository;
     private final LostPetRepository lostPetRepository;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    // private final KafkaTemplate<String, Object> kafkaTemplate;
 
     // ── Adoption Listings ───────────────────────────────────
 
@@ -54,7 +53,7 @@ public class PostService {
     }
 
     @Transactional
-    public AdoptionResponse updateAdoptionStatus(UUID id, AdoptionStatus newStatus) {
+    public AdoptionResponse updateAdoptionStatus(String id, AdoptionStatus newStatus) {
         AdoptionListing listing = adoptionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("AdoptionListing", "id", id));
         listing.setStatus(newStatus);
@@ -81,7 +80,7 @@ public class PostService {
         // service)
         String eventPayload = String.format("{\"reportId\":\"%s\",\"petId\":\"%s\",\"location\":\"%s\"}",
                 report.getId(), report.getPetId(), report.getLastSeenLocation());
-        kafkaTemplate.send("pet.lost", report.getId().toString(), eventPayload);
+        // kafkaTemplate.send("pet.lost", report.getId(), eventPayload);
 
         log.info("Lost pet report {} created by owner {}", report.getId(), ownerId);
         return toDto(report);
@@ -94,15 +93,15 @@ public class PostService {
     }
 
     @Transactional
-    public LostPetResponse resolveLostPet(UUID id, String ownerId) {
+    public LostPetResponse resolveLostPet(String id, String ownerId) {
         LostPetReport report = lostPetRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("LostPetReport", "id", id));
 
         report.setStatus(ReportStatus.FOUND);
         report = lostPetRepository.save(report);
 
-        kafkaTemplate.send("pet.found", report.getId().toString(),
-                String.format("{\"reportId\":\"%s\",\"petId\":\"%s\"}", id, report.getPetId()));
+        // kafkaTemplate.send("pet.found", report.getId(),
+        //         String.format("{\"reportId\":\"%s\",\"petId\":\"%s\"}", id, report.getPetId()));
 
         return toDto(report);
     }

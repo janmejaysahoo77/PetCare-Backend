@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,7 +27,7 @@ public class PetService {
     private final PetRepository petRepository;
     private final VaccinationRepository vaccinationRepository;
     private final BlockchainIdentityService blockchainIdentityService;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    // private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Transactional
     public PetResponse createPet(String ownerId, PetRequest request) {
@@ -51,8 +50,8 @@ public class PetService {
         // 3. Emit Async Action (e.g. to Gamification, Notification)
         // In a real app, you'd send a dedicated Event object. For now we just log/send
         // JSON string representation
-        kafkaTemplate.send("pet.created", pet.getId().toString(),
-                String.format("{\"petId\":\"%s\",\"ownerId\":\"%s\"}", pet.getId(), ownerId));
+        // kafkaTemplate.send("pet.created", pet.getId(),
+        //         String.format("{\"petId\":\"%s\",\"ownerId\":\"%s\"}", pet.getId(), ownerId));
         log.info("Registered new pet ({}) with blockchain ID: {}", pet.getId(), hash);
 
         return toDto(pet);
@@ -66,14 +65,14 @@ public class PetService {
     }
 
     @Transactional(readOnly = true)
-    public PetResponse getPet(UUID id) {
+    public PetResponse getPet(String id) {
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pet", "id", id));
         return toDto(pet);
     }
 
     @Transactional
-    public VaccinationResponse addVaccination(UUID petId, String vetId, String vetName, VaccinationRequest request) {
+    public VaccinationResponse addVaccination(String petId, String vetId, String vetName, VaccinationRequest request) {
         if (!petRepository.existsById(petId)) {
             throw new ResourceNotFoundException("Pet", "id", petId);
         }
@@ -93,7 +92,7 @@ public class PetService {
     }
 
     @Transactional(readOnly = true)
-    public List<VaccinationResponse> getPetVaccinations(UUID petId) {
+    public List<VaccinationResponse> getPetVaccinations(String petId) {
         return vaccinationRepository.findByPetIdOrderByDateGivenDesc(petId).stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
